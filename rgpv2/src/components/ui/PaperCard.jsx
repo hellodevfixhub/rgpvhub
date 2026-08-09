@@ -1,13 +1,24 @@
 import { motion } from 'framer-motion'
 import { FileText, Download, Eye, Share2, Heart, TrendingUp } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { downloadFile } from '../../lib/downloadHelper.js'
 import toast from 'react-hot-toast'
 
 export default function PaperCard({ paper, index = 0 }) {
   const { isFavorite, toggleFavorite, addDownload } = useAuth()
   const fav = isFavorite(paper.id, 'paper')
 
-  const handleDownload = () => { addDownload({ ...paper, type:'paper' }); toast.success('Download started!') }
+  const handleDownload = () => {
+    if (paper.fileUrl) {
+      addDownload({ ...paper, type:'paper' })
+    }
+    downloadFile(
+      paper.fileUrl,
+      `${paper.title.replace(/\s+/g, '_')}.pdf`,
+      'Download started!',
+      'Download file is not available yet.'
+    )
+  }
   const handleShare = async () => {
     try { await navigator.share({ title:paper.title, url:window.location.href }) }
     catch { await navigator.clipboard.writeText(window.location.href); toast.success('Link copied!') }

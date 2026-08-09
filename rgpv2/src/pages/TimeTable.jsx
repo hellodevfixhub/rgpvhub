@@ -2,14 +2,15 @@ import { motion } from 'framer-motion'
 import { Calendar, Download, Clock, AlertCircle, ExternalLink } from 'lucide-react'
 import Breadcrumb from '../components/layout/Breadcrumb.jsx'
 import SEOHead from '../components/ui/SEOHead.jsx'
+import { downloadFile } from '../lib/downloadHelper.js'
 import toast from 'react-hot-toast'
 
 const EXAM_SCHEDULE = [
-  { course:'B.Tech', semester:'Even Semester (4th, 6th, 8th)',      month:'May – June',          status:'Upcoming' },
-  { course:'B.Tech', semester:'Odd Semester (1st, 3rd, 5th, 7th)',  month:'Nov – Dec',           status:'Upcoming' },
-  { course:'M.Tech', semester:'Even Semester',                       month:'May – June',          status:'Upcoming' },
-  { course:'MBA',    semester:'All Semesters',                       month:'May – June / Nov – Dec', status:'Upcoming' },
-  { course:'MCA',    semester:'All Semesters',                       month:'May – June / Nov – Dec', status:'Upcoming' },
+  { course:'B.Tech', semester:'Even Semester (4th, 6th, 8th)',      month:'May – June',          status:'Upcoming', fileUrl:'/time table/B.Tech — Even Semester (4th, 6th, 8th).pdf' },
+  { course:'B.Tech', semester:'Odd Semester (1st, 3rd, 5th, 7th)',  month:'Nov – Dec',           status:'Upcoming', fileUrl:'/time table/B.Tech — Even Semester (4th, 6th, 8th).pdf' },
+  { course:'M.Tech', semester:'Even Semester',                       month:'May – June',          status:'Upcoming', fileUrl:'/time table/B.Tech — Even Semester (4th, 6th, 8th).pdf' },
+  { course:'MBA',    semester:'All Semesters',                       month:'May – June / Nov – Dec', status:'Upcoming', fileUrl:'/time table/B.Tech — Even Semester (4th, 6th, 8th).pdf' },
+  { course:'MCA',    semester:'All Semesters',                       month:'May – June / Nov – Dec', status:'Upcoming', fileUrl:'/time table/B.Tech — Even Semester (4th, 6th, 8th).pdf' },
 ]
 
 export default function TimeTable() {
@@ -71,7 +72,12 @@ export default function TimeTable() {
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="px-2 py-0.5 rounded text-xs font-semibold text-white" style={{ backgroundColor:'#04AA6D' }}>{exam.status}</span>
-                    <button onClick={() => toast.success('Time table PDF will be uploaded when available. Follow Instagram for updates!')}
+                    <button onClick={() => downloadFile(
+                      exam.fileUrl,
+                      `${exam.course.replace(/\s+/g, '_')}_Time_Table.pdf`,
+                      'Downloading time table PDF...',
+                      'Time table PDF will be uploaded when available. Follow Instagram for updates!'
+                    )}
                       className="p-2 rounded transition-all" style={{ color:'#aaa' }}
                       onMouseOver={e => e.currentTarget.style.color='#04AA6D'}
                       onMouseOut={e => e.currentTarget.style.color='#aaa'}>
@@ -106,7 +112,12 @@ export default function TimeTable() {
                     onMouseOut={e => e.currentTarget.style.color='#aaa'}>
                     <ExternalLink size={15}/>
                   </button>
-                  <button onClick={() => toast.success('Time table will be uploaded once released!')}
+                  <button onClick={() => downloadFile(
+                    item.fileUrl,
+                    `${item.title.replace(/\s+/g, '_')}.pdf`,
+                    'Downloading time table PDF...',
+                    'Time table will be uploaded once released!'
+                  )}
                     className="p-2 rounded transition-all" style={{ color:'#aaa' }}
                     onMouseOver={e => e.currentTarget.style.color='#04AA6D'}
                     onMouseOut={e => e.currentTarget.style.color='#aaa'}>

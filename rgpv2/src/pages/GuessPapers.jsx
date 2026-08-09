@@ -4,10 +4,11 @@ import { Target, Download, Star, Flame, AlertTriangle, ChevronDown } from 'lucid
 import { BRANCHES, SEMESTERS } from '../data/index.js'
 import Breadcrumb from '../components/layout/Breadcrumb.jsx'
 import SEOHead from '../components/ui/SEOHead.jsx'
+import { downloadFile } from '../lib/downloadHelper.js'
 import toast from 'react-hot-toast'
 
 const GUESS_PAPERS = [
-  { id:1, subject:'Data Structures & Algorithms',    branch:'cse',  semester:3, difficulty:'High',   importance:5, topics:['Arrays & Strings','Trees & Graphs','Dynamic Programming','Sorting Algorithms','Recursion'], year:'2024' },
+  { id:1, subject:'Data Structures & Algorithms',    branch:'cse',  semester:3, difficulty:'High',   importance:5, topics:['Arrays & Strings','Trees & Graphs','Dynamic Programming','Sorting Algorithms','Recursion'], year:'2024', fileUrl:'/guess papers/Data Structures & Algorithms.pdf' },
   { id:2, subject:'Engineering Mathematics I',        branch:'all',  semester:1, difficulty:'Medium', importance:5, topics:['Differential Calculus','Integral Calculus','Matrices','Differential Equations','Fourier Series'], year:'2024' },
   { id:3, subject:'Database Management Systems',      branch:'cse',  semester:4, difficulty:'Medium', importance:4, topics:['SQL Queries','Normalization','ER Diagrams','Transaction Management','Indexing'], year:'2024' },
   { id:4, subject:'Computer Networks',                branch:'cse',  semester:6, difficulty:'High',   importance:4, topics:['OSI Model','TCP/IP','Routing Algorithms','Network Security','HTTP/DNS'], year:'2024' },
@@ -124,7 +125,12 @@ export default function GuessPapers() {
                       </div>
                     </div>
 
-                    <button onClick={() => toast.success('Downloading guess paper PDF...')}
+                    <button onClick={() => downloadFile(
+                      paper.fileUrl,
+                      `${paper.subject.replace(/\s+/g, '_')}_Guess_Paper.pdf`,
+                      'Downloading guess paper PDF...',
+                      'Guess paper file is not available yet.'
+                    )}
                       className="w-full flex items-center justify-center gap-2 py-2.5 rounded font-semibold text-sm transition-all text-white"
                       style={{ backgroundColor:'#FF9800' }}
                       onMouseOver={e => e.currentTarget.style.backgroundColor='#e65100'}

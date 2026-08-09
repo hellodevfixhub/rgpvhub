@@ -52,6 +52,7 @@ export const PAPERS = [
     fileSize: '2.4 MB',
     trending: true,
     tags: ['maths', 'first year', '2024'],
+    fileUrl: '/papers/Engineering_Mathematics_I.pdf',
   },
   {
     id: 2,
@@ -165,6 +166,7 @@ export const NOTES = [
     rating: 4.8,
     pages: 120,
     fileSize: '5.2 MB',
+    fileUrl: '/notes/Complete DSA Notes with Examples.pdf',
     tags: ['dsa', 'arrays', 'trees', 'graphs'],
   },
   {

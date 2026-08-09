@@ -4,6 +4,7 @@ import { CheckCircle, Download, Eye, Search, ChevronDown, X } from 'lucide-react
 import { PAPERS, BRANCHES, SEMESTERS } from '../data/index.js'
 import Breadcrumb from '../components/layout/Breadcrumb.jsx'
 import SEOHead from '../components/ui/SEOHead.jsx'
+import { downloadFile } from '../lib/downloadHelper.js'
 import toast from 'react-hot-toast'
 
 const SOLVED_PAPERS = PAPERS.map(p => ({
@@ -107,7 +108,12 @@ export default function Solutions() {
                         onMouseOut={e => { e.currentTarget.style.borderColor='#d5d5d5'; e.currentTarget.style.color='#555' }}>
                         <Eye size={12}/> Preview
                       </button>
-                      <button onClick={() => toast.success('Downloading solved paper PDF...')}
+                      <button onClick={() => downloadFile(
+                        paper.solutionUrl || paper.fileUrl,
+                        `${paper.title.replace(/\s+/g, '_')}_Solution.pdf`,
+                        'Downloading solved paper PDF...',
+                        'Solution file is not available yet.'
+                      )}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold text-white transition-all"
                         style={{ backgroundColor:'#4caf50' }}
                         onMouseOver={e => e.currentTarget.style.backgroundColor='#388e3c'}

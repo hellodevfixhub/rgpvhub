@@ -1,13 +1,24 @@
 import { motion } from 'framer-motion'
 import { BookOpen, Download, Star, Heart } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { downloadFile } from '../../lib/downloadHelper.js'
 import toast from 'react-hot-toast'
 
 export default function NoteCard({ note, index = 0 }) {
   const { isFavorite, toggleFavorite, addDownload } = useAuth()
   const fav = isFavorite(note.id, 'note')
 
-  const handleDownload = () => { addDownload({ ...note, type:'note' }); toast.success('Downloading...') }
+  const handleDownload = () => {
+    if (note.fileUrl) {
+      addDownload({ ...note, type:'note' })
+    }
+    downloadFile(
+      note.fileUrl,
+      `${note.title.replace(/\s+/g, '_')}.pdf`,
+      'Download started!',
+      'Note file is not available yet.'
+    )
+  }
   const handleFav = () => { toggleFavorite({ ...note, type:'note' }); toast.success(fav ? 'Removed' : 'Saved!') }
 
   return (

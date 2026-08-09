@@ -4,6 +4,7 @@ import { ChevronDown, Download } from 'lucide-react'
 import { BRANCHES, SEMESTERS, SYLLABUS_DATA } from '../data/index.js'
 import Breadcrumb from '../components/layout/Breadcrumb.jsx'
 import SEOHead from '../components/ui/SEOHead.jsx'
+import { downloadFile } from '../lib/downloadHelper.js'
 import toast from 'react-hot-toast'
 
 export default function Syllabus() {
@@ -67,7 +68,15 @@ export default function Syllabus() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button onClick={e => { e.stopPropagation(); toast.success(`Downloading Sem ${sem} syllabus...`) }}
+                        <button onClick={e => {
+                        e.stopPropagation()
+                        downloadFile(
+                          '/sylabus/Md_Kazim_JavaDev_Resume.pdf',
+                          `Sem_${sem}_Syllabus.pdf`,
+                          `Downloading Sem ${sem} syllabus...`,
+                          'Syllabus PDF is not available yet.'
+                        )
+                      }}
                           className="p-1.5 rounded transition-all text-sm"
                           style={{ color:'#aaa' }}
                           onMouseOver={e => e.currentTarget.style.color='#FF9800'}
@@ -107,7 +116,12 @@ export default function Syllabus() {
                 <h3 className="font-semibold mb-4" style={{ color:'#282A35' }}>Quick Download</h3>
                 <div className="space-y-2">
                   {SEMESTERS.map(sem => (
-                    <button key={sem} onClick={() => toast.success(`Downloading Sem ${sem} syllabus...`)}
+                    <button key={sem} onClick={() => downloadFile(
+                      '/sylabus/Md_Kazim_JavaDev_Resume.pdf',
+                      `Sem_${sem}_Syllabus.pdf`,
+                      `Downloading Sem ${sem} syllabus...`,
+                      'Syllabus PDF is not available yet.'
+                    )}
                       className="w-full flex items-center justify-between p-3 rounded transition-all text-sm"
                       style={{ border:'1px solid #e0e0e0', color:'#555', backgroundColor:'#fff' }}
                       onMouseOver={e => { e.currentTarget.style.borderColor='#FF9800'; e.currentTarget.style.color='#FF9800' }}
