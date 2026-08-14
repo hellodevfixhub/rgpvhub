@@ -13,6 +13,7 @@ import Papers from './pages/Papers.jsx'
 import Notes from './pages/Notes.jsx'
 import Syllabus from './pages/Syllabus.jsx'
 import Results from './pages/Results.jsx'
+import DiplomaResults from './pages/DiplomaResults.jsx'
 import TimeTable from './pages/TimeTable.jsx'
 import GuessPapers from './pages/GuessPapers.jsx'
 import Solutions from './pages/Solutions.jsx'
@@ -55,6 +56,7 @@ export default function App() {
                 <Route path="/notes" element={<Notes />} />
                 <Route path="/syllabus" element={<Syllabus />} />
                 <Route path="/results" element={<Results />} />
+                <Route path="/results/diploma" element={<DiplomaResults />} />
                 <Route path="/timetable" element={<TimeTable />} />
                 <Route path="/guess-papers" element={<GuessPapers />} />
                 <Route path="/solutions" element={<Solutions />} />

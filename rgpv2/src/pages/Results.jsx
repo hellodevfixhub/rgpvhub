@@ -151,7 +151,7 @@ export default function Results() {
               <div className="w3-card p-5">
                 <h3 className="font-semibold mb-4" style={{ color:'#282A35' }}>Quick Links</h3>
                 <div className="space-y-2">
-                  {['B.Tech','M.Tech','MBA','MCA','Diploma'].map(course => (
+                  {['B.Tech','M.Tech','MBA','MCA'].map(course => (
                     <a key={course} href="https://rgpv.ac.in" target="_blank" rel="noopener noreferrer"
                       className="flex items-center justify-between p-3 rounded transition-all text-sm"
                       style={{ border:'1px solid #e0e0e0', color:'#555' }}
@@ -161,6 +161,14 @@ export default function Results() {
                       <ExternalLink size={12} style={{ color:'#aaa' }} />
                     </a>
                   ))}
+                  <a href="/results/diploma"
+                    className="flex items-center justify-between p-3 rounded transition-all text-sm"
+                    style={{ border:'1px solid #e0e0e0', color:'#555' }}
+                    onMouseOver={e => { e.currentTarget.style.color='#04AA6D'; e.currentTarget.style.borderColor='#04AA6D' }}
+                    onMouseOut={e => { e.currentTarget.style.color='#555'; e.currentTarget.style.borderColor='#e0e0e0' }}>
+                    <span>Check Diploma Result</span>
+                    <ExternalLink size={12} style={{ color:'#aaa' }} />
+                  </a>
                 </div>
               </div>
 

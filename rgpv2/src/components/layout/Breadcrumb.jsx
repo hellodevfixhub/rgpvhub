@@ -3,7 +3,7 @@ import { ChevronRight, Home } from 'lucide-react'
 
 const LABELS = {
   papers:'Previous Year Papers', notes:'Study Notes', syllabus:'Syllabus',
-  results:'Results', timetable:'Time Table', 'guess-papers':'Guess Papers',
+  results:'Results', diploma:'Diploma Result', timetable:'Time Table', 'guess-papers':'Guess Papers',
   solutions:'PYQ Solutions', blog:'Blog', tools:'Tools', about:'About Us',
   contact:'Contact', dashboard:'Dashboard',
   privacy:'Privacy Policy', terms:'Terms & Conditions', disclaimer:'Disclaimer',
