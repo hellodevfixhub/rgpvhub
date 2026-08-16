@@ -4,7 +4,7 @@ import {
   Upload, FileText, BookOpen, Rss, Users, BarChart3, TrendingUp,
   Download, Eye, Plus, Trash2, Edit, ArrowLeft, Save, X, Star,
 } from 'lucide-react'
-import { PAPERS, BLOG_CATEGORIES } from '../data/index.js'
+import { PAPERS, BLOG_CATEGORIES, COURSES } from '../data/index.js'
 import { getPosts, createPost, updatePost, deletePost } from '../lib/blogService.js'
 import { uploadContent } from '../lib/uploadService.js'
 import { collection, getDocs, orderBy, query } from 'firebase/firestore'
@@ -44,7 +44,7 @@ function StatCard({ label, value, change, icon: Icon, color, bg }) {
 
 export default function Admin() {
   const [tab, setTab] = useState('dashboard')
-  const [uploadForm,     setUploadForm]     = useState({ type: 'paper', title: '', branch: '', semester: '', year: '', file: null })
+  const [uploadForm,     setUploadForm]     = useState({ type: 'paper', title: '', course: '', branch: '', semester: '', year: '', subject: '', file: null })
   const [uploadProgress, setUploadProgress] = useState(0)
   const [uploading,      setUploading]      = useState(false)
 
@@ -177,7 +177,7 @@ export default function Admin() {
     try {
       await uploadContent(uploadForm.file, uploadForm, setUploadProgress)
       toast.success(`${uploadForm.type === 'paper' ? 'Paper' : 'Note'} uploaded successfully!`)
-      setUploadForm({ type: uploadForm.type, title: '', branch: '', semester: '', year: '', file: null })
+      setUploadForm({ type: uploadForm.type, title: '', course: '', branch: '', semester: '', year: '', subject: '', file: null })
       setUploadProgress(0)
     } catch (err) {
       toast.error('Upload failed: ' + (err.message || 'Unknown error'))
@@ -591,21 +591,40 @@ export default function Admin() {
                         placeholder="Enter title..." className="w3-input" required />
                     </div>
                     {uploadForm.type !== 'blog' && (
-                      <div className="grid grid-cols-3 gap-3">
-                        {[
-                          { label: 'Branch', field: 'branch', placeholder: 'CSE', type: 'text' },
-                          { label: 'Semester', field: 'semester', placeholder: '1-8', type: 'number' },
-                          { label: 'Year', field: 'year', placeholder: '2024', type: 'text' },
-                        ].map(f => (
-                          <div key={f.field}>
-                            <label className="text-xs mb-2 block font-medium" style={{ color: '#555' }}>{f.label}</label>
-                            <input type={f.type} min={f.type === 'number' ? 1 : undefined} max={f.type === 'number' ? 8 : undefined}
-                              value={uploadForm[f.field]}
-                              onChange={e => setUploadForm({ ...uploadForm, [f.field]: e.target.value })}
-                              placeholder={f.placeholder} className="w3-input text-sm" />
-                          </div>
-                        ))}
-                      </div>
+                      <>
+                        <div>
+                          <label className="text-xs mb-2 block font-medium" style={{ color: '#555' }}>Course *</label>
+                          <select value={uploadForm.course}
+                            onChange={e => setUploadForm({ ...uploadForm, course: e.target.value })}
+                            className="w3-input text-sm" required>
+                            <option value="">Select course</option>
+                            {COURSES.map(c => (
+                              <option key={c.id} value={c.id}>{c.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-xs mb-2 block font-medium" style={{ color: '#555' }}>Subject</label>
+                          <input type="text" value={uploadForm.subject}
+                            onChange={e => setUploadForm({ ...uploadForm, subject: e.target.value })}
+                            placeholder="e.g. Data Structures" className="w3-input text-sm" />
+                        </div>
+                        <div className="grid grid-cols-3 gap-3">
+                          {[
+                            { label: 'Branch', field: 'branch', placeholder: 'CSE', type: 'text' },
+                            { label: 'Semester', field: 'semester', placeholder: '1-8', type: 'number' },
+                            { label: 'Year', field: 'year', placeholder: '2024', type: 'text' },
+                          ].map(f => (
+                            <div key={f.field}>
+                              <label className="text-xs mb-2 block font-medium" style={{ color: '#555' }}>{f.label}</label>
+                              <input type={f.type} min={f.type === 'number' ? 1 : undefined} max={f.type === 'number' ? 8 : undefined}
+                                value={uploadForm[f.field]}
+                                onChange={e => setUploadForm({ ...uploadForm, [f.field]: e.target.value })}
+                                placeholder={f.placeholder} className="w3-input text-sm" />
+                            </div>
+                          ))}
+                        </div>
+                      </>
                     )}
                     <div>
                       <label className="text-xs mb-2 block font-medium" style={{ color: '#555' }}>Upload File</label>
@@ -643,6 +662,7 @@ export default function Admin() {
                   </form>
                 </motion.div>
               )}
+
 
             </div>
           </div>

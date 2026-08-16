@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useSearchParams } from 'react-router-dom'
 import { Mail, Lock, User, Eye, EyeOff, Chrome } from 'lucide-react'
 import {
   signInWithEmailAndPassword,

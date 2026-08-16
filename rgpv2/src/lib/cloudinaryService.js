@@ -3,8 +3,8 @@
 //  Cloud name  → Cloudinary dashboard (top-left)
 //  Upload preset → Settings → Upload → Upload Presets (Unsigned)
 // ─────────────────────────────────────────────────────────
-const CLOUD_NAME    = 'YOUR_CLOUD_NAME'
-const UPLOAD_PRESET = 'YOUR_UPLOAD_PRESET'
+const CLOUD_NAME    = 'nnkklone'
+const UPLOAD_PRESET = 'rgpvhub_uploads'
 
 /**
  * Uploads a file to Cloudinary using an unsigned upload preset.

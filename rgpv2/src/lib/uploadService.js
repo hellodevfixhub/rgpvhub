@@ -1,47 +1,35 @@
-import { storage, db } from './firebase.js'
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { db } from './firebase.js'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { uploadToCloudinary } from './cloudinaryService.js'
 
 /**
- * Uploads a file to Firebase Storage and saves metadata to Firestore.
+ * Uploads a file to Cloudinary and saves metadata to Firestore.
  * @param {File} file
- * @param {{ type: 'paper'|'note', title: string, branch: string, semester: string, year: string }} meta
+ * @param {{ type: 'paper'|'note', title: string, course: string, branch: string, semester: string, year: string, subject: string }} meta
  * @param {(pct: number) => void} onProgress  called with 0-100
  */
-export const uploadContent = (file, meta, onProgress = () => {}) => {
-  return new Promise((resolve, reject) => {
-    const { type, title, branch, semester, year } = meta
-    const ext      = file.name.split('.').pop()
-    const safeName = title.trim().replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')
-    const fileName = `${Date.now()}_${safeName}.${ext}`
-    const path     = `${type}s/${fileName}`
+export const uploadContent = async (file, meta, onProgress = () => {}) => {
+  const { type, title, course, branch, semester, year, subject } = meta
+  const ext      = file.name.split('.').pop()
+  const safeName = title.trim().replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')
+  const fileName = `${Date.now()}_${safeName}.${ext}`
+  const folder   = type === 'paper' ? 'papers' : 'notes'
 
-    const storageRef  = ref(storage, path)
-    const uploadTask  = uploadBytesResumable(storageRef, file)
+  const downloadURL = await uploadToCloudinary(file, folder, onProgress)
 
-    uploadTask.on(
-      'state_changed',
-      (snap) => onProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
-      reject,
-      async () => {
-        try {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
-          const col = type === 'paper' ? 'papers' : 'notes'
-          await addDoc(collection(db, col), {
-            title:     title.trim(),
-            branch:    branch.trim().toLowerCase(),
-            semester:  parseInt(semester) || 1,
-            year:      year.trim(),
-            fileUrl:   downloadURL,
-            fileName,
-            downloads: 0,
-            createdAt: serverTimestamp(),
-          })
-          resolve(downloadURL)
-        } catch (err) {
-          reject(err)
-        }
-      }
-    )
+  const col = type === 'paper' ? 'papers' : 'notes'
+  await addDoc(collection(db, col), {
+    title:     title.trim(),
+    course:    (course || '').trim(),
+    branch:    branch.trim().toLowerCase(),
+    semester:  parseInt(semester) || 1,
+    year:      year.trim(),
+    subject:   (subject || '').trim(),
+    fileUrl:   downloadURL,
+    fileName,
+    downloads: 0,
+    createdAt: serverTimestamp(),
   })
+
+  return downloadURL
 }

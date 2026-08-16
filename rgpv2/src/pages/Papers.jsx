@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Search, X, SlidersHorizontal, ChevronDown } from 'lucide-react'
-import { PAPERS, BRANCHES, SEMESTERS, YEARS, COURSES } from '../data/index.js'
+import { Search, X, ChevronDown } from 'lucide-react'
+import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { db } from '../lib/firebase.js'
+import { BRANCHES, SEMESTERS, YEARS, COURSES } from '../data/index.js'
 import PaperCard from '../components/ui/PaperCard.jsx'
 import Breadcrumb from '../components/layout/Breadcrumb.jsx'
 import SEOHead from '../components/ui/SEOHead.jsx'
@@ -22,16 +24,38 @@ export default function Papers() {
   const [year,     setYear]     = useState('')
   const [course,   setCourse]   = useState('')
 
-  const filtered = useMemo(() => PAPERS.filter(p => {
+  // ── Live papers from Firestore ─────────────────────────
+  const [papers,  setPapers]  = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadPapers() {
+      setLoading(true)
+      try {
+        const q = query(collection(db, 'papers'), orderBy('createdAt', 'desc'))
+        const snap = await getDocs(q)
+        setPapers(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+      } catch (err) {
+        console.error('Failed to load papers:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadPapers()
+  }, [])
+
+  const filtered = useMemo(() => papers.filter(p => {
     const q = search.toLowerCase()
+    const title = (p.title || '').toLowerCase()
+    const subject = (p.subject || '').toLowerCase() // may be empty for now, see note below
     return (
-      (!q || p.title.toLowerCase().includes(q) || p.subject.toLowerCase().includes(q)) &&
-      (!branch   || p.branch===branch || p.branch==='all') &&
-      (!semester || p.semester===Number(semester)) &&
-      (!year     || p.year===year) &&
-      (!course   || p.course===course)
+      (!q || title.includes(q) || subject.includes(q)) &&
+      (!branch   || p.branch === branch) &&
+      (!semester || p.semester === Number(semester)) &&
+      (!year     || p.year === year) &&
+      (!course   || p.course === course)
     )
-  }), [search, branch, semester, year, course])
+  }), [papers, search, branch, semester, year, course])
 
   const clear = () => { setSearch(''); setBranch(''); setSemester(''); setYear(''); setCourse('') }
   const hasFilters = search||branch||semester||year||course
@@ -50,7 +74,7 @@ export default function Papers() {
             <Breadcrumb />
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
               <div>
-                <span className="w3-badge-green mb-3 inline-block">5,000+ Papers</span>
+                <span className="w3-badge-green mb-3 inline-block">{papers.length}+ Papers</span>
                 <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">
                   Previous Year <span style={{ color:'#04AA6D' }}>Question Papers</span>
                 </h1>
@@ -94,21 +118,28 @@ export default function Papers() {
               </div>
             ))}
           </motion.div>
-          <p className="text-sm mb-5" style={{ color:'#777' }}>
-            Showing <strong style={{ color:'#282A35' }}>{filtered.length}</strong> papers
-          </p>
 
-          {filtered.length===0 ? (
-            <div className="text-center py-20">
-              <div className="text-5xl mb-4">😕</div>
-              <h3 className="font-bold text-[#282A35] text-lg mb-2">No papers found</h3>
-              <p className="text-[#777] text-sm mb-4">Try adjusting your filters</p>
-              <button onClick={clear} className="btn-outline">Clear Filters</button>
-            </div>
+          {loading ? (
+            <p className="text-sm py-10 text-center" style={{ color:'#777' }}>Loading papers…</p>
           ) : (
-            <div className="grid sm:grid-cols-2 gap-4">
-              {filtered.map((p,i) => <PaperCard key={p.id} paper={p} index={i} />)}
-            </div>
+            <>
+              <p className="text-sm mb-5" style={{ color:'#777' }}>
+                Showing <strong style={{ color:'#282A35' }}>{filtered.length}</strong> papers
+              </p>
+
+              {filtered.length===0 ? (
+                <div className="text-center py-20">
+                  <div className="text-5xl mb-4">😕</div>
+                  <h3 className="font-bold text-[#282A35] text-lg mb-2">No papers found</h3>
+                  <p className="text-[#777] text-sm mb-4">Try adjusting your filters</p>
+                  <button onClick={clear} className="btn-outline">Clear Filters</button>
+                </div>
+              ) : (
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {filtered.map((p,i) => <PaperCard key={p.id} paper={p} index={i} />)}
+                </div>
+              )}
+            </>
           )}
 
           {/* SEO block */}

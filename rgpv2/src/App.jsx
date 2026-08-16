@@ -7,7 +7,7 @@ import Footer from './components/layout/Footer.jsx'
 import MobileNav from './components/layout/MobileNav.jsx'
 import { ScrollToTopOnNav } from './components/layout/ScrollToTop.jsx'
 import ScrollToTopButton from './components/layout/ScrollToTop.jsx'
-
+import AdminRoute from './components/admin/AdminRoute.jsx'
 import Home from './pages/Home.jsx'
 import Papers from './pages/Papers.jsx'
 import Notes from './pages/Notes.jsx'
@@ -24,6 +24,7 @@ import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Admin from './pages/Admin.jsx'
+import Login from './pages/Login.jsx'
 import Privacy from './pages/legal/Privacy.jsx'
 import Terms from './pages/legal/Terms.jsx'
 import Disclaimer from './pages/legal/Disclaimer.jsx'
@@ -66,7 +67,15 @@ export default function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/admin" element={<Admin />} />
+                <Route path="/login" element={<Login />} />
+                <Route
+                  path="/admin"
+                  element={
+                    <AdminRoute>
+                      <Admin />
+                    </AdminRoute>
+                  }
+                />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/disclaimer" element={<Disclaimer />} />
