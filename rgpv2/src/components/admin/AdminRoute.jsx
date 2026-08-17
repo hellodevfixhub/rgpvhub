@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { useAdminStatus } from '../../lib/adminAuth.js'
+import { useAdminStatus } from '../../lib/AdminAuth.js'
 
 export default function AdminRoute({ children }) {
   const { user, isAdmin, loading } = useAdminStatus()
